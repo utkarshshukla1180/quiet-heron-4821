@@ -1,16 +1,17 @@
-import { Card } from './components/Card'
-import { SourceBadge as Badge } from './components/SourceBadge'
+import { useState } from 'react'
+import type { Query } from './api/client'
+import { Controls } from './components/Controls'
 
 export default function App() {
+  const [query, setQuery] = useState<Query>({
+    start: '2026-01-02', end: '2026-02-01', mode: 'cutoff', cutoffHour: 11, horizonH: 4,
+  })
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <Card title="Source badges" subtitle="Hover each one to see the explanation">
-        <div className="flex flex-wrap gap-2">
-          <Badge source="live" />
-          <Badge source="cache" />
-          <Badge source="snapshot" unavailable={['2026-01-05', '2026-01-06']} />
-        </div>
-      </Card>
+    <div className="mx-auto max-w-5xl space-y-4 p-6">
+      <Controls query={query} onChange={setQuery} />
+      <pre className="rounded-xl border border-line bg-surface-1 p-4 text-[13px] text-ink-2">
+        {JSON.stringify(query, null, 2)}
+      </pre>
     </div>
   )
 }
