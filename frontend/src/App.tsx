@@ -1,3 +1,4 @@
+import { VintagesPanel } from './components/VintagesPanel'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { api, type Query } from './api/client'
@@ -28,6 +29,7 @@ export default function App() {
       <Card title="Forecast vs actual" subtitle={slot ? `You clicked ${slot}` : 'Hover for details, click an hour'}>
         {series.data ? <ForecastChart points={series.data.points} onPick={setSlot} /> : <Empty>Loading…</Empty>}
       </Card>
+            {slot && <VintagesPanel slot={slot} onClose={() => setSlot(null)} />}
       <Breakdown groups={groups.data?.groups ?? []} points={series.data?.points ?? []} tab={tab} onTab={setTab}
         loading={groups.isFetching} />
     </div>
