@@ -1,23 +1,15 @@
-import { useState } from 'react'
-import { Card, Empty, Segmented } from './components/Card'
+import { Card } from './components/Card'
+import { SourceBadge as Badge } from './components/SourceBadge'
 
 export default function App() {
-  const [mode, setMode] = useState<'cutoff' | 'horizon'>('cutoff')
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <Card
-        title="Test card"
-        subtitle="Card, Segmented and Empty together"
-        actions={
-          <Segmented
-            label="Mode"
-            value={mode}
-            onChange={setMode}
-            options={[{ value: 'cutoff', label: 'At decision time' }, { value: 'horizon', label: 'Hours ahead' }]}
-          />
-        }
-      >
-        <Empty>Selected: {mode}</Empty>
+      <Card title="Source badges" subtitle="Hover each one to see the explanation">
+        <div className="flex flex-wrap gap-2">
+          <Badge source="live" />
+          <Badge source="cache" />
+          <Badge source="snapshot" unavailable={['2026-01-05', '2026-01-06']} />
+        </div>
       </Card>
     </div>
   )
