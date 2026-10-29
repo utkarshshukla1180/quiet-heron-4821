@@ -13,7 +13,9 @@ ELEXON_RETRIES = int(os.getenv("ELEXON_RETRIES", "3"))
 ELEXON_CONCURRENCY = int(os.getenv("ELEXON_CONCURRENCY", "4"))
 ELEXON_BACKOFF_S = float(os.getenv("ELEXON_BACKOFF_S", "60"))
 
-CACHE_DIR = Path(os.getenv("CACHE_DIR", BACKEND_DIR / "cache"))
+ON_VERCEL = os.getenv("VERCEL") == "1"
+
+CACHE_DIR = Path(os.getenv("CACHE_DIR", "/tmp/cache" if ON_VERCEL else BACKEND_DIR / "cache"))
 SNAPSHOT_DIR = Path(os.getenv("SNAPSHOT_DIR", BACKEND_DIR / "data" / "snapshot"))
 FRONTEND_DIST = Path(os.getenv("FRONTEND_DIST", BACKEND_DIR.parent / "frontend" / "dist"))
 
