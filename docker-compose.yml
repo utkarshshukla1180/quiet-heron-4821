@@ -1,0 +1,18 @@
+# Local development: API on :8000, Vite dev server on :5173 (open this one).
+services:
+  backend:
+    build: ./backend
+    ports: ["8000:8000"]
+    volumes:
+      - ./backend:/app/backend
+    environment:
+      - CACHE_DIR=/app/backend/cache
+
+  frontend:
+    build: ./frontend
+    ports: ["5173:5173"]
+    volumes:
+      - ./frontend/src:/app/frontend/src
+    environment:
+      - API_PROXY_TARGET=http://backend:8000
+    depends_on: [backend]
