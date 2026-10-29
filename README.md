@@ -1,11 +1,11 @@
 # 🌬️ Wind Forecast Monitor
 
-[IMG[CI][ci]](URL://github.com/utkarshshukla1180/quiet-heron-4821/actions/workflows/ci.yml)
-IMG[Python][python]
-IMG[FastAPI][fastapi]
-IMG[React][react]
-IMG[TypeScript][typescript]
-IMG[Docker][docker]
+[![CI][ci]](https://github.com/utkarshshukla1180/quiet-heron-4821/actions/workflows/ci.yml)
+![Python][python]
+![FastAPI][fastapi]
+![React][react]
+![TypeScript][typescript]
+![Docker][docker]
 
 > ⚡ A small web app for a GB power trader. For January 2026 it answers one question:
 > **what did the wind forecast say at the moment I had to buy, and how far off do such
@@ -19,11 +19,19 @@ decision: typical miss, bias, and a P10 to P90 error band.
 
 ## 📸 Screenshots
 
-IMG[Dashboard: forecast accuracy and forecast vs actual chart][dashboard]
+@@[Dashboard: forecast accuracy and forecast vs actual chart][dashboard]
 
-| 🕰️ How one hour's forecast changed     | 📊 Where the errors come from   |
-| -------------------------------------- | ------------------------------- |
-| IMG[Forecast vintages panel][vintages] | IMG[Error breakdown][breakdown] |
+### 🕰️ How one hour of forecasts changed
+
+Click any hour on the chart to see every forecast published for it. Here, 12 Jan 00:00:
+the forecast rose from about 20.4 GW to 21.3 GW as delivery got closer, but only 13.95 GW
+of wind arrived.
+
+@@[Forecast vintages for 12 Jan 00:00][vintages]
+
+### 📊 Where the errors come from
+
+@@[Typical miss by hours ahead][breakdown]
 
 ## 💡 Key finding
 
@@ -200,27 +208,11 @@ Heroku's disk is wiped on each restart; the cache simply rebuilds through the st
 warm-up. Settings can be changed with environment variables (see `backend/app/config.py`),
 for example `heroku config:set ELEXON_TIMEOUT_S=30`.
 
-## 🤖 Use of AI tools
-
-This project was built with help from Claude (Anthropic), used through Claude Code.
-I used it to:
-
-- draft the architecture and build plan, then review and adjust them,
-- write first versions of the backend modules, tests and React components,
-- debug issues found while running the app (for example, chart click handling), and
-- draft this README.
-
-I made the product decisions (judging the forecast at the D-1 11:00 decision time,
-which metrics to show, live data with a cache and snapshot fallback), reviewed the code,
-and checked the results against the Elexon data. I built and ran each file
-myself, one at a time, to understand what it does.
-
-[ci]: URL://github.com/utkarshshukla1180/quiet-heron-4821/actions/workflows/ci.yml/badge.svg
-[python]: URL://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white
-[fastapi]: URL://img.shields.io/badge/FastAPI-0.162-009688?logo=fastapi&logoColor=white
-[react]: URL://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black
-[typescript]: URL://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white
-[docker]: URL://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white
+[ci]: https://github.com/utkarshshukla1180/quiet-heron-4821/actions/workflows/ci.yml/badge.svg
+[python]: https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white
+[fastapi]: https://img.shields.io/badge/FastAPI-0.162-009688?logo=fastapi&logoColor=white
+[react]: https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black
+[typescript]: https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white
+[docker]: https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white
 [dashboard]: docs/dashboard.png
-[vintages]: docs/vintages.png
 [breakdown]: docs/breakdown.png
