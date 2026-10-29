@@ -15,7 +15,7 @@ It compares Elexon's national wind forecast (`WINDFOR`) 🔵 with actual wind ge
 (`FUELHH`, fuel type `WIND`) 🟠, and reports the error in a way that helps size a purchase
 decision: typical miss, bias, and a P10 to P90 error band.
 
-🔗 **Live demo:** https://quiet-heron-4821.vercel.app](https://quiet-heron-4821-p283m5er0-utkarshshukla1180-4625s-projects.vercel.app/
+🔗 **Live demo:** https://quiet-heron-4821.vercel.app
 
 ## 📸 Screenshots
 
