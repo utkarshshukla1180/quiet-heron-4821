@@ -19,7 +19,7 @@ decision: typical miss, bias, and a P10 to P90 error band.
 
 ## 📸 Screenshots
 
-@@[Dashboard: forecast accuracy and forecast vs actual chart][dashboard]
+![Dashboard: forecast accuracy and forecast vs actual chart][dashboard]
 
 ### 🕰️ How one hour of forecasts changed
 
@@ -27,11 +27,11 @@ Click any hour on the chart to see every forecast published for it. Here, 12 Jan
 the forecast rose from about 20.4 GW to 21.3 GW as delivery got closer, but only 13.95 GW
 of wind arrived.
 
-@@[Forecast vintages for 12 Jan 00:00][vintages]
+![Forecast vintages for 12 Jan 00:00][vintages]
 
 ### 📊 Where the errors come from
 
-@@[Typical miss by hours ahead][breakdown]
+![Typical miss by hours ahead][breakdown]
 
 ## 💡 Key finding
 
@@ -216,3 +216,5 @@ for example `heroku config:set ELEXON_TIMEOUT_S=30`.
 [docker]: https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white
 [dashboard]: docs/dashboard.png
 [breakdown]: docs/breakdown.png
+
+git mv "docs/Screenshot 2026-10-29 220831.png" docs/vintages.png
