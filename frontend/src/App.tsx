@@ -75,7 +75,10 @@ export default function App() {
 
         {slot && (
           <VintagesPanel slot={slot} onClose={() => setSlot(null)}
-            cutoffIso={query.mode === 'cutoff' ? cutoffFor(slot, query.cutoffHour) : undefined} />
+            cutoffIso={query.mode === 'cutoff'
+              ? cutoffFor(slot, query.cutoffHour)
+              : new Date(Date.parse(slot) - query.horizonH * 3_600_000).toISOString()}
+            cutoffLabel={query.mode === 'cutoff' ? 'Decision time' : `${query.horizonH} h before`} />
         )}
 
         <Breakdown groups={groups.data?.groups ?? []} points={series.data?.points ?? []} tab={tab} onTab={setTab}

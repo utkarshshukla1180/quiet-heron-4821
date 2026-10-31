@@ -4,7 +4,12 @@ import { api } from '../api/client'
 import { compactMw, dateTime, hours, mw, signedMw } from '../format'
 import { Card, Empty } from './Card'
 
-export function VintagesPanel({ slot, cutoffIso, onClose }: { slot: string; cutoffIso?: string; onClose: () => void }) {
+export function VintagesPanel({ slot, cutoffIso, cutoffLabel = 'Decision time', onClose }: {
+  slot: string
+  cutoffIso?: string
+  cutoffLabel?: string
+  onClose: () => void
+}) {
   const q = useQuery({ queryKey: ['vintages', slot], queryFn: () => api.vintages(slot) })
   const rows = (q.data?.vintages ?? []).map((v) => ({ ...v, x: Date.parse(v.publish_time) }))
   const actual = q.data?.actual
@@ -35,7 +40,7 @@ export function VintagesPanel({ slot, cutoffIso, onClose }: { slot: string; cuto
             {actual != null && <ReferenceLine y={actual} stroke="var(--series-actual)" strokeDasharray="4 3"
               label={{ value: 'Actual', position: 'insideTopRight', fill: 'var(--text-secondary)', fontSize: 11 }} />}
             {cutoffIso && <ReferenceLine x={Date.parse(cutoffIso)} stroke="var(--text-muted)" strokeDasharray="3 3"
-              label={{ value: 'Decision time', position: 'insideTopLeft', fill: 'var(--text-secondary)', fontSize: 11 }} />}
+              label={{ value: cutoffLabel, position: 'insideTopLeft', fill: 'var(--text-secondary)', fontSize: 11 }} />}
             <Tooltip cursor={{ stroke: 'var(--text-muted)', strokeDasharray: '3 3' }} content={({ active, payload }) => {
               if (!active || !payload?.length) return null
               const v = payload[0].payload as (typeof rows)[number]
