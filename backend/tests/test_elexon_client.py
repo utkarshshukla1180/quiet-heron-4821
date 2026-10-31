@@ -54,7 +54,7 @@ async def test_gives_up_after_retries(elexon_down):
 
 async def test_backs_off_after_failure(elexon_down, monkeypatch):
     monkeypatch.setattr(config, "ELEXON_BACKOFF_S", 60)
-    client = ElexonClient()
+    client = ElexonClient() 
     with pytest.raises(ElexonError):
         await client.fetch_actuals(date(2026, 1, 2), date(2026, 1, 2))
     calls = elexon_down.calls.call_count
