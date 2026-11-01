@@ -23,7 +23,7 @@ export function VintagesPanel({ slot, cutoffIso, cutoffLabel = 'Decision time', 
           : 'Each point is one published forecast for this hour.'
       }
       actions={
-        <button onClick={onClose} className="rounded-md px-2 py-1 text-[13px] text-ink-2 hover:bg-surface-0 hover:text-ink">
+        <button onClick={onClose} className="eyebrow h-9 rounded-[2px] border border-line px-4 text-ink transition-colors hover:bg-ink hover:text-surface-0">
           Close
         </button>
       }
@@ -33,9 +33,9 @@ export function VintagesPanel({ slot, cutoffIso, cutoffLabel = 'Decision time', 
           <LineChart data={rows} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
             <CartesianGrid stroke="var(--grid)" vertical={false} />
             <XAxis dataKey="x" type="number" scale="time" domain={['dataMin', 'dataMax']}
-              tickFormatter={(v) => dateTime(new Date(v).toISOString())} tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
+              tickFormatter={(v) => dateTime(new Date(v).toISOString())} tick={{ fill: 'var(--text-muted)', fontSize: 12, fontFamily: 'var(--font-mono)' }}
               axisLine={{ stroke: 'var(--border)' }} tickLine={false} minTickGap={40} />
-            <YAxis tickFormatter={compactMw} width={44} tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false}
+            <YAxis tickFormatter={compactMw} width={44} tick={{ fill: 'var(--text-muted)', fontSize: 12, fontFamily: 'var(--font-mono)' }} axisLine={false}
               tickLine={false} domain={['auto', 'auto']} />
             {actual != null && <ReferenceLine y={actual} stroke="var(--series-actual)" strokeDasharray="4 3"
               label={{ value: 'Actual', position: 'insideTopRight', fill: 'var(--text-secondary)', fontSize: 11 }} />}
@@ -45,7 +45,7 @@ export function VintagesPanel({ slot, cutoffIso, cutoffLabel = 'Decision time', 
               if (!active || !payload?.length) return null
               const v = payload[0].payload as (typeof rows)[number]
               return (
-                <div className="rounded-lg border border-line bg-surface-1 px-3 py-2 text-[12px] shadow-lg tabular text-ink-2">
+                <div className="rounded-[2px] border border-line bg-surface-1 px-3 py-2.5 text-[12px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] tabular text-ink-2">
                   <div className="font-semibold text-ink">Published {dateTime(v.publish_time)}</div>
                   <div>Forecast {mw(v.forecast)} · {hours(v.horizon_h)} ahead</div>
                   {actual != null && <div>Error {signedMw(v.forecast - actual)}</div>}

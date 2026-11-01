@@ -6,13 +6,13 @@ import { Card, Empty, Segmented } from './Card'
 
 type Tab = 'horizon' | 'hour' | 'day' | 'histogram'
 
-const axis = { tick: { fill: 'var(--text-muted)', fontSize: 12 }, tickLine: false }
+const axis = { tick: { fill: 'var(--text-muted)', fontSize: 12, fontFamily: 'var(--font-mono)' }, tickLine: false }
 
 function GroupTip({ active, payload, unit }: { active?: boolean; payload?: { payload: GroupStats }[]; unit: (g: GroupStats['group']) => string }) {
   if (!active || !payload?.length) return null
   const g = payload[0].payload
   return (
-    <div className="rounded-lg border border-line bg-surface-1 px-3 py-2 text-[12px] shadow-lg tabular">
+    <div className="rounded-[2px] border border-line bg-surface-1 px-3 py-2.5 text-[12px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] tabular">
       <div className="mb-1 font-semibold text-ink">{unit(g.group)}</div>
       <div className="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 text-ink-2">
         <span>MAE</span><span className="text-right text-ink">{mw(g.mae)}</span>
@@ -40,7 +40,7 @@ function GroupChart({ groups, tab }: { groups: GroupStats[]; tab: Exclude<Tab, '
         <XAxis dataKey="group" {...axis} axisLine={{ stroke: 'var(--border)' }} tickFormatter={tickFmt as (v: unknown) => string} interval="preserveStartEnd" />
         <YAxis {...axis} axisLine={false} width={44} tickFormatter={compactMw} />
         <Tooltip content={<GroupTip unit={LABEL[tab]} />} cursor={{ fill: 'var(--grid)' }} />
-        <Bar dataKey="mae" name="MAE" fill="var(--series-forecast)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+        <Bar dataKey="mae" name="MAE" fill="var(--series-forecast)" radius={[2, 2, 0, 0]} animationDuration={900} animationEasing="ease-out" />
       </BarChart>
     </ResponsiveContainer>
   )
@@ -71,13 +71,13 @@ function Histogram({ points }: { points: SeriesPoint[] }) {
           if (!active || !payload?.length) return null
           const b = payload[0].payload as { from: number; count: number }
           return (
-            <div className="rounded-lg border border-line bg-surface-1 px-3 py-2 text-[12px] shadow-lg tabular text-ink-2">
+            <div className="rounded-[2px] border border-line bg-surface-1 px-3 py-2.5 text-[12px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] tabular text-ink-2">
               <div className="font-semibold text-ink">{signedMw(b.from)} to {signedMw(b.from + 500)}</div>
               {b.count} hours
             </div>
           )
         }} />
-        <Bar dataKey="count" fill="var(--series-forecast)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+        <Bar dataKey="count" fill="var(--series-forecast)" radius={[2, 2, 0, 0]} animationDuration={900} animationEasing="ease-out" />
       </BarChart>
     </ResponsiveContainer>
   )
@@ -110,7 +110,7 @@ export function Breakdown({ groups, points, tab, onTab, loading }: {
         ]} />
       }
     >
-      <div className={loading ? 'opacity-50 transition-opacity' : ''}>
+      <div key={tab} className={`animate-fade-in ${loading ? 'opacity-50 transition-opacity' : ''}`}>
         {tab === 'histogram' ? <Histogram points={points} /> : <GroupChart groups={groups} tab={tab} />}
       </div>
     </Card>

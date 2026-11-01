@@ -11,12 +11,12 @@ const Field = (p: ComponentProps<'input'>) => createElement('input', p)
 
 export function Controls({ query, onChange }: { query: Query; onChange: (q: Query) => void }) {
   const set = (patch: Partial<Query>) => onChange({ ...query, ...patch })
-  const label = 'flex flex-col gap-1 text-[12px] font-medium text-ink-2'
+  const label = 'eyebrow flex flex-col gap-2 text-[11px] text-ink-3'
   const input =
-    'h-9 rounded-lg border border-line bg-surface-1 px-2.5 text-[14px] text-ink tabular outline-none focus:border-accent'
+    'h-9 rounded-[2px] border border-line bg-surface-1 px-2.5 font-sans text-[13px] normal-case tracking-normal text-ink tabular outline-none transition-colors focus:border-ink'
 
   return (
-    <div className="flex flex-wrap items-end gap-x-5 gap-y-3 rounded-xl border border-line bg-surface-1 p-4">
+    <div className="flex flex-wrap items-end gap-x-6 gap-y-4 border-y border-line py-4">
       <label className={label}>
         From
         <Field type="date" className={input} min={MIN} max={query.end} value={query.start}
@@ -53,10 +53,10 @@ export function Controls({ query, onChange }: { query: Query; onChange: (q: Quer
       ) : (
         <label className={`${label} min-w-56`}>
           <span>
-            Forecast made at least <span className="tabular text-ink">{query.horizonH} h</span> before delivery
+            Forecast made at least <span className="text-ink">{query.horizonH} h</span> before delivery
           </span>
           <Field type="range" min={0} max={48} step={1} value={query.horizonH}
-            onChange={(e) => set({ horizonH: Number(e.target.value) })} className="h-9 accent-[var(--accent)]" />
+            onChange={(e) => set({ horizonH: Number(e.target.value) })} className="h-10 accent-(--accent)" />
         </label>
       )}
     </div>

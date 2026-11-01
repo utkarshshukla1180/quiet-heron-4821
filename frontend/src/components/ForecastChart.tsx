@@ -21,7 +21,7 @@ function TooltipBody({ active, payload, onActive }: {
   if (!active || !payload?.length) return null
   const { p } = payload[0].payload
   return (
-    <div className="rounded-lg border border-line bg-surface-1 px-3 py-2 text-[12px] shadow-lg tabular">
+    <div className="rounded-[2px] border border-line bg-surface-1 px-3 py-2.5 text-[12px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] tabular">
       <div className="mb-1 font-semibold text-ink">{dateTime(p.t)}</div>
       <div className="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 text-ink-2">
         <span>Actual</span><span className="text-right text-ink">{mw(p.actual)}</span>
@@ -88,8 +88,8 @@ export function ForecastChart({ points, onPick }: { points: SeriesPoint[]; onPic
         <CartesianGrid stroke="var(--grid)" vertical={false} />
         <XAxis dataKey="x" type="number" scale="time" domain={['dataMin', 'dataMax']} ticks={ticks}
           tickFormatter={(v) => dayLabel(new Date(v).toISOString())}
-          tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
-        <YAxis tickFormatter={compactMw} width={44} tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
+          tick={{ fill: 'var(--text-muted)', fontSize: 12, fontFamily: 'var(--font-mono)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
+        <YAxis tickFormatter={compactMw} width={44} tick={{ fill: 'var(--text-muted)', fontSize: 12, fontFamily: 'var(--font-mono)' }}
           axisLine={false} tickLine={false} />
         <Tooltip content={<TooltipBody onActive={(r) => { hovered.current = r ? indexOf.get(r.x) ?? null : null }} />} cursor={{ stroke: 'var(--text-muted)', strokeDasharray: '3 3' }} />
         <Legend verticalAlign="top" align="right" height={28} iconType="plainline"
