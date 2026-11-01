@@ -208,6 +208,11 @@ Heroku's disk is wiped on each restart; the cache simply rebuilds through the st
 warm-up. Settings can be changed with environment variables (see `backend/app/config.py`),
 for example `heroku config:set ELEXON_TIMEOUT_S=30`.
 
+## 🤖 Use of AI tools
+
+I used Claude Code as a pair programmer to draft parts of the code, tests and docs, and to
+help debug. I made the design decisions, and I reviewed, ran and tested all the code myself.
+
 [ci]: https://github.com/utkarshshukla1180/quiet-heron-4821/actions/workflows/ci.yml/badge.svg
 [python]: https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white
 [fastapi]: https://img.shields.io/badge/FastAPI-0.162-009688?logo=fastapi&logoColor=white
