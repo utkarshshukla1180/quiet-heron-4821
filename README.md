@@ -17,6 +17,10 @@ decision: typical miss, bias, and a P10 to P90 error band.
 
 🔗 **Live demo:** https://quiet-heron-4821.vercel.app
 
+🎥 **Video walkthrough:** _add your YouTube link here_
+
+📐 **Design document:** [docs/HLD.md](docs/HLD.md)
+
 ## 📸 Screenshots
 
 ![Dashboard: forecast accuracy and forecast vs actual chart][dashboard]
@@ -25,7 +29,8 @@ decision: typical miss, bias, and a P10 to P90 error band.
 
 Click any hour on the chart to see every forecast published for it. Here, 12 Jan 00:00:
 the forecast rose from about 20.4 GW to 21.3 GW as delivery got closer, but only 13.95 GW
-of wind arrived.
+of wind arrived. The dashed vertical line marks the cut-off (the decision time, or "N h
+before" in fixed-hours mode); the newest point left of it is the forecast being judged.
 
 ![Forecast vintages for 12 Jan 00:00][vintages]
 
@@ -58,7 +63,7 @@ docker compose up --build
 # open http://localhost:5173
 ```
 
-💻 **Without Docker** (Python 3.12+, Node 20+), in two terminals:
+💻 **Without Docker** (Python 3.12+, Node 22+), in two terminals:
 
 ```bash
 # terminal 1: API on :8000
@@ -91,6 +96,10 @@ Browser (React) ──/api──▶ FastAPI ──▶ DataService ──▶ day 
   change, so the cache never expires.
 - 🔥 **Warm start.** On startup the app loads January 2026 in the background, so the first
   visitor does not wait on Elexon.
+- 🖥️ **Frontend.** React 19 + TypeScript, built with Vite. Data comes through a typed API
+  client and TanStack React Query; charts are Recharts; styling is Tailwind CSS. The page
+  opens with a full-screen windmill video that shrinks as you scroll, and sections fade in
+  on scroll (switched off when the system asks for reduced motion).
 - 🛟 **Fallback.** If Elexon is down, the app serves the snapshot committed in
   `backend/data/snapshot/`, and the page shows an "Offline snapshot" badge. After a
   failure it stops calling Elexon for 60 seconds, so pages stay fast.
@@ -106,6 +115,8 @@ A forecast is only useful for the decision it informs. Two modes:
   much a later or earlier decision would change the error.
 - ⏳ **Fixed hours ahead.** For each delivery hour, the newest forecast published at least
   _N_ hours before it (0 to 48 h). This shows how error grows with forecast horizon.
+  Overnight there is a gap in the forecast schedule (no run between about 22:30 and 02:30
+  UTC), so for 00:00 to 02:00 even "0 h" uses a forecast 1.5 to 3.5 hours old.
 
 Forecasts more than 48 hours ahead are ignored. "January 2026" is read as decisions made
 1 to 31 January, which means delivery days 2 January to 1 February.
@@ -141,6 +152,11 @@ Judged at the default decision time (D-1 11:00 UK), over 744 hourly comparisons:
 The forecast ran high almost all month: in a typical hour, about 1.7 GW less wind arrived
 than the day-ahead forecast said, and in 1 hour in 10 the shortfall was over 4.2 GW.
 
+Using the latest forecast before delivery (fixed hours ahead, 0 h) lowers the MAE to
+1,680 MW, but the bias stays around +1.5 GW. A forecast made that close to delivery should
+not be that far off because of weather alone, so part of the gap is likely curtailment
+(wind farms told to reduce output because of grid limits). This is not verified.
+
 ## 🔌 API
 
 Interactive docs at `/docs`.
@@ -158,6 +174,8 @@ Every data response says where the data came from: `cache`, `live` or `snapshot`
 
 ```
 backend/
+  Dockerfile           dev image used by docker-compose (uvicorn --reload)
+  requirements.txt     runtime packages; requirements-dev.txt adds pytest, respx
   app/
     main.py            FastAPI app and routes; serves the built frontend in production
     elexon_client.py   async Elexon calls, chunked, with retries and back-off
@@ -167,16 +185,29 @@ backend/
     config.py          settings from environment variables
   scripts/make_snapshot.py
   data/snapshot/       committed fallback data
-  tests/               pytest; Elexon is mocked with respx
+  tests/               22 pytest tests; Elexon is mocked with respx
 frontend/
+  Dockerfile           dev image used by docker-compose (Vite dev server)
+  public/windmill.mp4  hero video
   src/
     api/client.ts      typed API client
-    components/        controls, KPI tiles, charts
-    App.tsx
+    App.tsx            page layout, current query, data requests
+    format.ts          number and date formatting
+    components/
+      Hero.tsx, Motion.tsx, ScrollStatement.tsx   opening video and scroll effects
+      Controls.tsx     dates, mode, decision hour / horizon slider
+      KpiTiles.tsx     the five error measures and summary sentence
+      ForecastChart.tsx  actual vs forecast, gap shaded; click an hour for its history
+      VintagesPanel.tsx  every forecast for one hour, with the cut-off line
+      Breakdown.tsx    error by hours ahead, hour of day, day, and a histogram
+      SourceBadge.tsx  cached / live / offline snapshot
+      Card.tsx         shared card, tabs and empty state
 Dockerfile             production image (Node build stage + Python runtime)
 docker-compose.yml     local dev: backend :8000 + Vite :5173
-heroku.yml             Heroku container deploy
-docs/                  screenshots used in this README
+vercel.json            Vercel deploy: builds the root Dockerfile as one container
+heroku.yml             alternative Heroku container deploy
+docs/HLD.md            high-level design
+docs/*.png             screenshots used in this README
 .github/workflows/ci.yml  runs tests, frontend build and Docker build on every push
 ```
 
@@ -187,26 +218,29 @@ cd backend
 python -m pytest -q
 ```
 
-The tests never call Elexon. They cover the forecast selection rule (forecasts either
+There are 22 tests, and none of them call Elexon. They cover the forecast selection rule (forecasts either
 side of the cutoff, a forecast exactly at the cutoff, the UK summer-time shift), metric
 values on hand-made data, the cache (live then cached, only missing days fetched, cache
 surviving a restart), the snapshot fallback, retries and back-off, and the API endpoints.
 GitHub Actions runs them, the frontend type-check build and the Docker build on every push.
 
-## ☁️ Deploy to Heroku
+## ☁️ Deployment (Vercel)
 
-The app ships as one Docker image, so the deploy uses the same container as local runs.
+The live app runs on Vercel's container runtime, using the same Docker image as local runs.
+`vercel.json` tells Vercel to build the root `Dockerfile` as one service and send every
+request to it:
 
-```bash
-heroku create APP_NAME
-heroku stack:set container -a APP_NAME
-git push heroku main
-heroku open -a APP_NAME
-```
+1. Import the GitHub repo in Vercel (root directory `./`, no framework preset).
+2. Add the environment variable `PORT=8000`, so Vercel sends traffic to the port uvicorn
+   listens on.
+3. Deploy. Every push to `main` redeploys automatically.
 
-Heroku's disk is wiped on each restart; the cache simply rebuilds through the startup
-warm-up. Settings can be changed with environment variables (see `backend/app/config.py`),
-for example `heroku config:set ELEXON_TIMEOUT_S=30`.
+The cache lives inside the running container. When Vercel stops an idle container, the next
+one reloads January through the startup warm-up (or the snapshot if Elexon is down).
+Other settings can be changed with environment variables (see `backend/app/config.py`).
+
+**Heroku** works with the same image: `heroku.yml` is included, so `heroku create`,
+`heroku stack:set container` and `git push heroku main` deploy it.
 
 ## 🤖 Use of AI tools
 
